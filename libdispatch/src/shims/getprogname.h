@@ -31,7 +31,7 @@ getprogname(void)
     return program_invocation_short_name;
 #elif HAVE_GETEXECNAME
     return getexecname();
-# elif TARGET_OS_WIN32
+# elif TARGET_OS_WIN32 || __ANDROID__
 	return 0;
 # else
 #   error getprogname(3) is not available on this platform

@@ -115,7 +115,7 @@ _dispatch_absolute_time(void)
 
 #if HAVE_DECL_CLOCK_UPTIME
 	ret = clock_gettime(CLOCK_UPTIME, &ts);
-#elif HAVE_DECL_CLOCK_MONOTONIC
+#elif HAVE_DECL_CLOCK_MONOTONIC || __ANDROID__
 	ret = clock_gettime(CLOCK_MONOTONIC, &ts);
 #else
 # error "clock_gettime: no supported absolute time clock"

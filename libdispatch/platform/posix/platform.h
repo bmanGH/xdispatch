@@ -28,11 +28,12 @@
 #include <sys/time.h>
 #include <sys/mount.h>
 #include <sys/types.h>
+#if !__ANDROID__
 #include <sys/sysctl.h>
+#endif
 #include <sys/queue.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
-#include <sys/sysctl.h>
 #include <fcntl.h>
 
 #include <signal.h>

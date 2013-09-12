@@ -37,6 +37,10 @@ if(FORCE_OWN_LIBKQUEUE)
     set(LIBS ${LIBS} kqueue)
 endif()
 
+if(ANDROID)
+	set(ANDROID_CPUFEATURES ${ANDROID_NDK}/sources/android/cpufeatures)
+endif()
+
 # other needed functions
 check_include_files( mach/mach_time.h HAVE_MACH_ABSOLUTE_TIME)
 check_include_files( stdint.h HAVE_STDINT_H )
@@ -49,12 +53,16 @@ check_symbol_exists( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
 check_symbol_exists( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 check_function_exists( sysconf HAVE_SYSCONF)
 
-if(LINUX)
+if(LINUX AND NOT ANDROID)
     set(LIBS ${LIBS} rt m)
 endif()
 
-if(NOT WIN32)
+if(NOT WIN32 AND NOT ANDROID)
     set(LIBS ${LIBS} pthread)
+endif()
+
+if(ANDROID)
+    set(LIBS ${LIBS} m)
 endif()
 
 if(MINGW)
@@ -70,6 +78,10 @@ elseif(APPLE)
 	source_group(platform\\darwin FILES ${PLATFORM_OS})
 else()
 	file(GLOB PLATFORM_OS platform/posix/*.c platform/posix/*.h)
+	if(ANDROID)
+		set(PLATFORM_OS ${PLATFORM_OS} ${ANDROID_CPUFEATURES}/cpu-features.c ${ANDROID_CPUFEATURES}/cpu-features.h)
+		mz_add_c_flag(GCC -Wno-unused-variable)
+	endif()
 	source_group(platform\\posix FILES ${PLATFORM_OS})
 endif()
 file(GLOB PLATFORM platform/*.h platform/*.c)
@@ -107,9 +119,15 @@ set_property(TARGET dispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
 # finally create the config.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
+if(ANDROID)
+	set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} ${ANDROID_CPUFEATURE})
+endif()
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
+if(ANDROID)
+	include_directories(${ANDROID_CPUFEATURES})
+endif()
 
 
 if(APPLE)

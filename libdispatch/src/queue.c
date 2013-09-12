@@ -23,6 +23,10 @@
 #include "protocol.h"
 #endif
 
+#if __ANDROID__
+#include "cpu-features.h"
+#endif
+
 #if defined(_MSC_VER)
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
@@ -543,6 +547,10 @@ static void
 	_dispatch_hw_config.cc_max_logical =
 		_dispatch_hw_config.cc_max_physical =
 		_dispatch_hw_config.cc_max_active = (ret < 0) ? 1 : ret;
+#elif __ANDROID__
+	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_physical =
+		_dispatch_hw_config.cc_max_active = android_getCpuCount();
 #else
 #warning "_dispatch_queue_set_width_init: no supported way to query CPU count"
 	_dispatch_hw_config.cc_max_logical =

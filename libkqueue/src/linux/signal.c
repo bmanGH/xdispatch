@@ -19,6 +19,9 @@
 #if HAVE_SYS_SIGNALFD_H
 # include <sys/signalfd.h>
 #else
+#if __ANDROID__
+# define SYS_signalfd __NR_signalfd
+#endif
 #define signalfd(a,b,c) syscall(SYS_signalfd, (a), (b), (c))
 #define SFD_NONBLOCK 04000
 struct signalfd_siginfo
