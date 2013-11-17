@@ -21,6 +21,8 @@ package com.android.gl2jni;
 public class GL2JNILib {
 
      static {
+         System.loadLibrary("dispatch");
+         System.loadLibrary("xdispatch");
          System.loadLibrary("gl2jni");
      }
 
