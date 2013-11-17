@@ -4,5 +4,6 @@ Android
 How to build
 ------------
 
-    ANDROID_NDK=/usr/local/Cellar/android-ndk/r8e ./build.sh
+    export ANDROID_NDK=/path_to_ndk/android-ndk-r9
+    ./build.sh
 
