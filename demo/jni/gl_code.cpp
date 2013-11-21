@@ -126,16 +126,18 @@ GLuint gProgram;
 GLuint gvPositionHandle;
 
 bool setupGraphics(int w, int h) {
-    // dispatch_queue_t q =
-    //     dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    // dispatch_async(q, ^{
+    dispatch_queue_t q =
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(q, [] {
 
-    //     sleep(5);
+        LOGI("333");
+        sleep(5);
+        LOGI("444");
 
-    //     dispatch_async(dispatch_get_main_queue(), []{
-    //         LOGI("libdispatch");
-    //     });
-    // });
+        dispatch_async(dispatch_get_main_queue(), [] {
+            LOGI("555");
+        });
+    });
 
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
@@ -190,7 +192,7 @@ extern "C" {
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height)
 {
-    setupGraphics(width, height);
+    LOGI("000");
 
     xdispatch::global_queue().async([] {
    
@@ -204,9 +206,13 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobj
           });
    
    });
+
+    setupGraphics(width, height);
 }
 
 JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj)
 {
     renderFrame();
+
+    dispatch_main_queue_drain_till_empty();
 }

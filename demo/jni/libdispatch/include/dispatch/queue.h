@@ -425,6 +425,17 @@ void
 dispatch_main(void);
 
 /**
+ * Manually execute blocks submitted to the main queue.
+ *
+ * @remarks use this function for platform which can not control run loop, like Android.
+ *
+ */
+
+DISPATCH_EXPORT
+void
+dispatch_main_queue_drain_till_empty(void);
+
+/**
  * Schedule a block for execution on a given queue at a specified time.
  *
  * Passing DISPATCH_TIME_NOW as the "when" parameter is supported, but not as

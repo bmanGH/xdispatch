@@ -1820,6 +1820,10 @@ void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT handler)
 }
 #endif
 
+void dispatch_main_queue_drain_till_empty(){
+	_dispatch_queue_serial_drain_till_empty(&_dispatch_main_q);
+}
+
 #ifndef DISPATCH_NO_LEGACY
 static void
 	dispatch_queue_attr_dispose(dispatch_queue_attr_t attr)
