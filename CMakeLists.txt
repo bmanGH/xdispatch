@@ -25,7 +25,7 @@ INCLUDE (CheckSymbolExists)
 
 # start new subproject
 project(xdispatch)
-include(package/version.cmake)
+# include(package/version.cmake)
 
 # ctest config
 option(BUILD_XDISPATCH_TESTS "Enable to build the xdispatch test suite" OFF)
@@ -80,11 +80,15 @@ else()
     option(FORCE_OWN_LIBPTHREAD_WORKQUEUE "Enable to force the use of the shipped libpthread_workqueue version" ON)
 endif()
 
-check_include_files(dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
-if(HAVE_NATIVE_DISPATCH_H)
-    option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" OFF)
+if (NOT FORCE_NATIVE_DISPATCH_H)
+    check_include_files(dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
+    if(HAVE_NATIVE_DISPATCH_H)
+        option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" OFF)
+    else()
+        option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" ON)
+    endif()
 else()
-    option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" ON)
+    option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" OFF)
 endif()
 
 if(FORCE_OWN_LIBKQUEUE AND FORCE_OWN_LIBDISPATCH)
@@ -120,7 +124,7 @@ endif()
 if(NOT FORCE_OWN_LIBDISPATCH)
     message("   >> using system installed libdispatch")
     mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
-    if(NOT APPLE) # mac os is currently the only operating system with auto linking
+    if(NOT APPLE) # mac os / iOS is currently the only operating system with auto linking
         set(LIBS ${LIBS} dispatch)
     endif()
 else()
